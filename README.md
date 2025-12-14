@@ -1,11 +1,11 @@
-# UCSF Health Unified Search
+# DoctorSearch
 
-A modern, AI-powered unified search solution for UCSF Health that combines doctor search, location search, and content search into a single, intelligent interface.
+A modern, AI-powered unified search solution for UCSF Health that combines doctor search, location search, and content search into a single, intelligent interface. The app receives a prompt and finds the best doctor for your needs based on that prompt.
 
 ## Features
 
 - **Unified Search**: Single search box that finds doctors, locations, and health information
-- **AI-Powered**: Intelligent query processing with suggestions and auto-complete
+- **AI-Powered**: Intelligent query processing with LLM-powered summaries and auto-complete
 - **Modern UI**: Beautiful, responsive interface built with React
 - **Elasticsearch Backend**: Powerful search engine with advanced filtering and aggregations
 - **Real-time Results**: Fast, relevant search results with highlighting
@@ -17,7 +17,8 @@ A modern, AI-powered unified search solution for UCSF Health that combines docto
 - **Frontend**: React 18, Styled Components, Lucide React Icons
 - **Backend**: Node.js, Express.js
 - **Search Engine**: Elasticsearch 8.11 with Kibana
-- **Data**: JSON-based with Faker.js for sample data generation
+- **AI Summaries**: Groq/OpenAI/Hugging Face LLM integration
+- **Data**: JSON-based with comprehensive disease database
 
 ## Quick Start
 
@@ -31,8 +32,8 @@ A modern, AI-powered unified search solution for UCSF Health that combines docto
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
-   cd ucsf-unified-search
+   git clone https://github.com/greger1012/DoctorSearch.git
+   cd DoctorSearch
    ```
 
 2. **Install dependencies**
@@ -55,7 +56,13 @@ A modern, AI-powered unified search solution for UCSF Health that combines docto
    npm run seed
    ```
 
-6. **Start the development servers**
+6. **Configure environment variables** (optional - for AI summaries)
+   ```bash
+   # Copy config.env.example to server/config.env and add your API keys
+   # See README_LLM_SETUP.md for details
+   ```
+
+7. **Start the development servers**
    ```bash
    npm run dev
    ```
@@ -69,7 +76,7 @@ The application will be available at:
 ## Project Structure
 
 ```
-ucsf-unified-search/
+DoctorSearch/
 ├── client/                 # React frontend
 │   ├── src/
 │   │   ├── components/     # Reusable components
@@ -78,10 +85,12 @@ ucsf-unified-search/
 │   │   └── App.js         # Main app component
 │   └── package.json
 ├── server/                 # Node.js backend
+│   ├── config/            # Configuration files
 │   ├── routes/            # API routes
+│   ├── services/          # Business logic services
+│   ├── utils/             # Utility functions
 │   ├── scripts/           # Setup and seeding scripts
 │   └── index.js           # Server entry point
-├── docker-compose.yml     # Elasticsearch & Kibana setup
 └── package.json           # Root package.json
 ```
 
@@ -108,7 +117,7 @@ The unified search supports natural language queries like:
 - "UCSF neurologists at Parnassus who see new patients this month"
 - "Cardiologists accepting new patients"
 - "Emergency care Mission Bay"
-- "Cancer treatment locations"
+- "Parkinson's disease specialists"
 - "Pediatric specialists"
 
 ## Elasticsearch Indices
@@ -131,6 +140,7 @@ The system uses three main indices:
 
 The search functionality can be customized by modifying:
 - `server/routes/search.js` - Search logic and scoring
+- `server/services/` - Business logic services
 - `client/src/components/SearchBox.js` - Search UI and suggestions
 - `client/src/components/SearchResults.js` - Results display
 
