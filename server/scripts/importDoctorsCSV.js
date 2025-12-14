@@ -42,7 +42,7 @@ function parseNewPatients(value) {
 
 function parseDate(dateString) {
   if (!dateString || dateString.trim() === '') return null;
-
+  
   try {
     // Parse M/D/YYYY format
     const parts = dateString.trim().split('/');
@@ -60,7 +60,7 @@ function parseDate(dateString) {
 
 function getExperienceYears(graduationDate, currentDate = new Date()) {
   if (!graduationDate) return null; // No fake data - return null if no graduation date
-
+  
   try {
     const gradYear = new Date(graduationDate).getFullYear();
     const currentYear = currentDate.getFullYear();
@@ -259,68 +259,68 @@ async function bulkIndex(index, docs) {
 async function importDoctorsCSV() {
   try {
     console.log('🔄 Starting UCSF doctors CSV import...');
-
+    
     const indexConfigs = {
       doctors: {
-        mappings: {
-          properties: {
-            type: { type: 'keyword' },
-            npi: { type: 'keyword' },
-            providerId: { type: 'keyword' },
-            name: {
-              type: 'text',
-              fields: {
-                keyword: { type: 'keyword' },
-                suggest: { type: 'completion' }
-              }
-            },
-            firstName: { type: 'keyword' },
-            lastName: { type: 'keyword' },
-            middleName: { type: 'keyword' },
-            suffix: { type: 'keyword' },
-            gender: { type: 'keyword' },
-            title: { type: 'keyword' },
-            language: { type: 'keyword' },
-            specialty: {
-              type: 'text',
-              fields: {
-                keyword: { type: 'keyword' },
-                suggest: { type: 'completion' }
-              }
-            },
-            secondarySpecialties: { type: 'keyword' },
+      mappings: {
+        properties: {
+          type: { type: 'keyword' },
+          npi: { type: 'keyword' },
+          providerId: { type: 'keyword' },
+          name: { 
+            type: 'text',
+            fields: {
+              keyword: { type: 'keyword' },
+              suggest: { type: 'completion' }
+            }
+          },
+          firstName: { type: 'keyword' },
+          lastName: { type: 'keyword' },
+          middleName: { type: 'keyword' },
+          suffix: { type: 'keyword' },
+          gender: { type: 'keyword' },
+          title: { type: 'keyword' },
+          language: { type: 'keyword' },
+          specialty: { 
+            type: 'text',
+            fields: {
+              keyword: { type: 'keyword' },
+              suggest: { type: 'completion' }
+            }
+          },
+          secondarySpecialties: { type: 'keyword' },
             boardCertifications: { type: 'text' },
-            education: { type: 'text' },
-            institution: { type: 'text' },
-            graduationDate: { type: 'date' },
-            location: {
-              type: 'text',
-              fields: {
-                keyword: { type: 'keyword' },
-                suggest: { type: 'completion' }
-              }
-            },
-            locationCode: { type: 'keyword' },
-            address: { type: 'text' },
-            city: { type: 'keyword' },
-            state: { type: 'keyword' },
-            zip: { type: 'keyword' },
-            phone: { type: 'keyword' },
-            fax: { type: 'keyword' },
-            department: { type: 'keyword' },
-            acceptingPatients: { type: 'boolean' },
-            staffStatus: { type: 'keyword' },
-            pcpSpec: { type: 'keyword' },
-            licenseNumber: { type: 'keyword' },
-            dateOnStaff: { type: 'date' },
-            currentFromDate: { type: 'date' },
-            currentToDate: { type: 'date' },
-            experience: { type: 'integer' },
-            rating: { type: 'float' },
-            reviews: { type: 'integer' },
-            profileImage: { type: 'keyword' }
-          }
+          education: { type: 'text' },
+          institution: { type: 'text' },
+          graduationDate: { type: 'date' },
+          location: { 
+            type: 'text',
+            fields: {
+              keyword: { type: 'keyword' },
+              suggest: { type: 'completion' }
+            }
+          },
+          locationCode: { type: 'keyword' },
+          address: { type: 'text' },
+          city: { type: 'keyword' },
+          state: { type: 'keyword' },
+          zip: { type: 'keyword' },
+          phone: { type: 'keyword' },
+          fax: { type: 'keyword' },
+          department: { type: 'keyword' },
+          acceptingPatients: { type: 'boolean' },
+          staffStatus: { type: 'keyword' },
+          pcpSpec: { type: 'keyword' },
+          licenseNumber: { type: 'keyword' },
+          dateOnStaff: { type: 'date' },
+          currentFromDate: { type: 'date' },
+          currentToDate: { type: 'date' },
+          experience: { type: 'integer' },
+          rating: { type: 'float' },
+          reviews: { type: 'integer' },
+          profileImage: { type: 'keyword' }
         }
+      }
       },
       locations: {
         mappings: {
@@ -522,24 +522,24 @@ async function importDoctorsCSV() {
       }
       const currentBatchNumber = Math.ceil(processedCount / BATCH_SIZE) + 1;
       console.log(`📦 Processing doctors batch ${currentBatchNumber} (${batch.length} records)...`);
-
+        
       const bulkBody = batch.flatMap(doc => [{ index: { _index: 'doctors' } }, doc]);
-      const response = await client.bulk({ body: bulkBody, refresh: false });
-
-      if (response.errors || response.body?.errors) {
+        const response = await client.bulk({ body: bulkBody, refresh: false });
+        
+        if (response.errors || response.body?.errors) {
         console.error(
           `❌ Doctors batch ${currentBatchNumber} had errors:`,
           JSON.stringify(response.items?.[0] || response.body?.items?.[0], null, 2)
         );
-      }
+        }
       processedCount += batch.length;
     };
 
     await new Promise((resolve, reject) => {
       fs.createReadStream(path.join(__dirname, '../../doctorsdata.CSV'))
-        .pipe(csv())
-        .on('data', (row) => {
-          try {
+      .pipe(csv())
+      .on('data', (row) => {
+        try {
             const npi = cleanString(row['NPI']);
             if (!npi) {
               return;
@@ -559,40 +559,40 @@ async function importDoctorsCSV() {
             const languageList = parseDelimitedList(row['LANGUAGE']);
             const graduationDate = parseDate(row['GRADUATION DATE']);
 
-            const doctor = {
-              type: 'doctor',
+          const doctor = {
+            type: 'doctor',
               npi,
-              providerId: cleanString(row['PROVIDER ID']),
+            providerId: cleanString(row['PROVIDER ID']),
               name: `${cleanString(row['FIRST NAME'])} ${cleanString(row['MIDDLE NAME'])} ${cleanString(row['LAST NAME'])} ${cleanString(row['SUFFIX'])}`.replace(/\s+/g, ' ').trim(),
-              firstName: cleanString(row['FIRST NAME']),
-              lastName: cleanString(row['LAST NAME']),
-              middleName: cleanString(row['MIDDLE NAME']),
-              suffix: cleanString(row['SUFFIX']),
-              gender: cleanString(row['GENDER']),
-              title: cleanString(row['TITLE']),
+            firstName: cleanString(row['FIRST NAME']),
+            lastName: cleanString(row['LAST NAME']),
+            middleName: cleanString(row['MIDDLE NAME']),
+            suffix: cleanString(row['SUFFIX']),
+            gender: cleanString(row['GENDER']),
+            title: cleanString(row['TITLE']),
               language: languageList.join(', '),
-              specialty: cleanString(row['PRIMARY SPECIALTY']),
+            specialty: cleanString(row['PRIMARY SPECIALTY']),
               secondarySpecialties,
               boardCertifications: boardCert ? [boardCert] : [],
-              education: cleanString(row['DEGREE']),
-              institution: cleanString(row['INSTITUTION']),
+            education: cleanString(row['DEGREE']),
+            institution: cleanString(row['INSTITUTION']),
               graduationDate,
-              locationCode: cleanString(row['SUBGROUP']),
+            locationCode: cleanString(row['SUBGROUP']),
               location: locationMapping[cleanString(row['SUBGROUP'])] || cleanString(row['PRIMARY LOCATION']) || 'UCSF Medical Center',
               address: `${cleanString(row['PRIMARYADDRESSLINE1'])} ${cleanString(row['PRIMARYADDRESSLINE2'])}`.replace(/\s+/g, ' ').trim(),
-              city: cleanString(row['PRIMARYCITY']),
-              state: cleanString(row['PRIMARYSTATE']),
-              zip: cleanString(row['PRIMARYZIP']),
-              phone: cleanString(row['PRIMARYPHONE1']),
-              fax: cleanString(row['PRIMARYFAX']),
-              department: cleanString(row['DEPARTMENT']),
-              acceptingPatients: parseNewPatients(row['NEW PATIENT']),
-              staffStatus: cleanString(row['STAFF STATUS']),
-              pcpSpec: cleanString(row['PCP / SPEC']),
-              licenseNumber: cleanString(row['CA LICENSE']),
-              dateOnStaff: parseDate(row['DATE ON STAFF']),
-              currentFromDate: parseDate(row['CURRENT FROM DATE']),
-              currentToDate: parseDate(row['CURRENT TO DATE']),
+            city: cleanString(row['PRIMARYCITY']),
+            state: cleanString(row['PRIMARYSTATE']),
+            zip: cleanString(row['PRIMARYZIP']),
+            phone: cleanString(row['PRIMARYPHONE1']),
+            fax: cleanString(row['PRIMARYFAX']),
+            department: cleanString(row['DEPARTMENT']),
+            acceptingPatients: parseNewPatients(row['NEW PATIENT']),
+            staffStatus: cleanString(row['STAFF STATUS']),
+            pcpSpec: cleanString(row['PCP / SPEC']),
+            licenseNumber: cleanString(row['CA LICENSE']),
+            dateOnStaff: parseDate(row['DATE ON STAFF']),
+            currentFromDate: parseDate(row['CURRENT FROM DATE']),
+            currentToDate: parseDate(row['CURRENT TO DATE']),
               experience: getExperienceYears(graduationDate),
               rating: null,
               reviews: null,
@@ -609,13 +609,13 @@ async function importDoctorsCSV() {
             if (doctorBatch.length >= BATCH_SIZE) {
               pendingDoctorBatches.push(processDoctorBatch(doctorBatch));
               doctorBatch = [];
-            }
-          } catch (error) {
-            console.error('Error processing row:', error);
           }
-        })
-        .on('end', async () => {
-          try {
+        } catch (error) {
+          console.error('Error processing row:', error);
+        }
+      })
+      .on('end', async () => {
+        try {
             if (doctorBatch.length) {
               pendingDoctorBatches.push(processDoctorBatch(doctorBatch));
               doctorBatch = [];
@@ -658,50 +658,50 @@ async function importDoctorsCSV() {
         })
         .on('error', reject);
     });
-
+          
     // Post-import statistics for doctors
-    const stats = await client.search({
-      index: 'doctors',
-      body: {
-        aggs: {
-          specialties: {
-            terms: {
-              field: 'specialty.keyword',
-              size: 10
+          const stats = await client.search({
+            index: 'doctors',
+            body: {
+              aggs: {
+                specialties: {
+                  terms: {
+                    field: 'specialty.keyword',
+                    size: 10
+                  }
+                },
+                locations: {
+                  terms: {
+                    field: 'location.keyword',
+                    size: 10
+                  }
+                },
+                acceptingPatients: {
+                  terms: {
+                    field: 'acceptingPatients'
+                  }
+                }
+              },
+              size: 0
             }
-          },
-          locations: {
-            terms: {
-              field: 'location.keyword',
-              size: 10
-            }
-          },
-          acceptingPatients: {
-            terms: {
-              field: 'acceptingPatients'
-            }
-          }
-        },
-        size: 0
-      }
-    });
+          });
 
-    const statsBody = stats.body || stats;
-    console.log('\n📊 Import Statistics:');
-    console.log('Top Specialties:');
+          const statsBody = stats.body || stats;
+          console.log('\n📊 Import Statistics:');
+          console.log('Top Specialties:');
     (statsBody.aggregations.specialties.buckets || []).forEach(bucket => {
-      console.log(`  ${bucket.key}: ${bucket.doc_count} doctors`);
-    });
+            console.log(`  ${bucket.key}: ${bucket.doc_count} doctors`);
+          });
 
-    console.log('\nLocations:');
+          console.log('\nLocations:');
     (statsBody.aggregations.locations.buckets || []).forEach(bucket => {
-      console.log(`  ${bucket.key}: ${bucket.doc_count} doctors`);
-    });
+            console.log(`  ${bucket.key}: ${bucket.doc_count} doctors`);
+          });
 
-    console.log('\nPatient Acceptance:');
+          console.log('\nPatient Acceptance:');
     (statsBody.aggregations.acceptingPatients.buckets || []).forEach(bucket => {
-      console.log(`  ${bucket.key}: ${bucket.doc_count} doctors`);
-    });
+            console.log(`  ${bucket.key}: ${bucket.doc_count} doctors`);
+          });
   } catch (error) {
     console.error('Import error:', error);
   }

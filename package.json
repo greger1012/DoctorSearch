@@ -9,6 +9,7 @@
     "client": "cd client && npm start",
     "build": "cd client && npm run build",
     "setup": "npm install && cd client && npm install && cd ../server && npm install",
+    "setup:check": "node setup.js",
     "elasticsearch": "docker-compose up -d elasticsearch kibana",
     "elasticsearch:stop": "docker-compose down",
     "seed": "node server/scripts/seedData.js",
