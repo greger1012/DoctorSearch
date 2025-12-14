@@ -1,0 +1,137 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Production builds
+client/build/
+dist/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# nyc test coverage
+.nyc_output
+
+# Dependency directories
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env
+config.env
+server/config.env
+
+# parcel-bundler cache (https://parceljs.org/)
+.cache
+.parcel-cache
+
+# next.js build output
+.next
+
+# nuxt.js build output
+.nuxt
+
+# vuepress build output
+.vuepress/dist
+
+# Serverless directories
+.serverless
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+# TernJS port file
+.tern-port
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Elasticsearch data
+elasticsearch_data/
+
+# Temporary scripts and test files
+server/scripts/addNeurologyConditionsManual.js
+server/scripts/addNeurologyProcedures.js
+server/scripts/server/
+test-*.js
+quick-test.js
+diagnose.js
+test-data.js
+test-system.js
+
+# Data files
+*.CSV
+*.csv
+email.txt
+doctorSearch.zip
+DoctorSearch0.1
+
+# Temporary documentation
+PROJECT_SUMMARY.md
+REFACTORING_SUMMARY.md
+PROTECTING_YOUR_API_KEY.md
+README_LLM_SETUP.md
+SETUP_GUIDE.md
+TROUBLESHOOTING.md
+RUN_APP.md
+QUICK_START.md
+WORKING_SOLUTION.md
+
+# Build/install scripts (not needed in repo)
+install.bat
+install.sh
+fix-and-start.bat
+fix-and-test.bat
+import-real-data.bat
+create-archive.bat
+
+# Docker (optional - might be needed, but let's exclude for now)
+docker-compose.yml

@@ -1,0 +1,39 @@
+{
+  "name": "ucsf-unified-search",
+  "version": "1.0.0",
+  "description": "Unified AI-powered search for UCSF Health combining doctor, location, and content search",
+  "main": "server/index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "nodemon server/index.js",
+    "client": "cd client && npm start",
+    "build": "cd client && npm run build",
+    "setup": "npm install && cd client && npm install && cd ../server && npm install",
+    "elasticsearch": "docker-compose up -d elasticsearch kibana",
+    "elasticsearch:stop": "docker-compose down",
+    "seed": "node server/scripts/seedData.js",
+    "startup": "node server/scripts/startup.js",
+    "init": "npm run elasticsearch && sleep 10 && npm run startup"
+  },
+  "keywords": [
+    "search",
+    "healthcare",
+    "elasticsearch",
+    "ai",
+    "ucsf"
+  ],
+  "author": "UCSF Health",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.0.2"
+  },
+  "dependencies": {
+    "@elastic/elasticsearch": "^8.11.0",
+    "axios": "^1.13.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "faker": "^6.6.6"
+  }
+}
