@@ -108,8 +108,9 @@ test-data.js
 test-system.js
 
 # Data files
-*.CSV
 *.csv
+# Exception: Include doctorsdata.CSV for the app to work out of the box
+!doctorsdata.CSV
 email.txt
 doctorSearch.zip
 DoctorSearch0.1
