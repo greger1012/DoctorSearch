@@ -53,13 +53,16 @@ A modern, AI-powered unified search solution for UCSF Health that combines docto
    node server/scripts/setupIndices.js
    ```
 
-5. **Import doctor data** (recommended)
+5. **Import doctor data** (required)
    ```bash
    node server/scripts/importDoctorsCSV.js
    ```
    
-   **Note**: The `doctorsdata.CSV` file is included in the repository, so real doctor data will be imported automatically.
-   If you prefer to use sample/fake data for testing, you can skip this step and run `npm run seed` instead.
+   **Important**: The `doctorsdata.CSV` file is included in the repository. This imports real doctor data.
+   The app will not work properly without doctor data.
+   
+   **For testing only**: If you need fake/test data for development, you can run `npm run seed:fake` 
+   (but this should never be used in production).
 
 6. **Configure environment variables** (optional - for AI summaries)
    ```bash
@@ -84,12 +87,14 @@ A modern, AI-powered unified search solution for UCSF Health that combines docto
 
 ### ✅ Included and Ready to Use:
 - **1,884+ disease/condition databases** - All medical conditions and procedures are included
-- **Real doctor data** - `doctorsdata.CSV` is included and will be imported automatically
+- **Real doctor data** - `doctorsdata.CSV` is included (import with `importDoctorsCSV.js`)
 - **Search functionality** - Natural language search works immediately
 - **Template-based AI summaries** - Works without API keys (basic summaries)
 
-### ⚠️ Optional Setup:
-- **LLM-powered summaries** - Requires your own API key in `server/config.env` (free Groq tier available)
+### ⚠️ Important Notes:
+- **No fake data by default** - The app only uses real data from `doctorsdata.CSV`. 
+  Fake/test data is only generated if you explicitly run `npm run seed:fake` (for testing only).
+- **LLM-powered summaries** - Optional, requires your own API key in `server/config.env` (free Groq tier available)
   - Each user needs their own Groq API key (for security and rate limiting)
   - Get a free key: https://console.groq.com/keys
   - Works exactly the same way - just uses your own key instead
@@ -173,9 +178,18 @@ The script will automatically detect and use any CSV file in the root directory.
 
 ### Adding New Data
 
-1. Modify the seeding scripts in `server/scripts/seedData.js`
-2. Update the index mappings in `server/scripts/setupIndices.js`
-3. Re-run the seeding process
+**For Real Doctor Data:**
+1. Update your CSV file (`doctorsdata.CSV` or your own CSV)
+2. Run: `node server/scripts/importDoctorsCSV.js`
+
+**For Fake/Test Data (testing only):**
+1. Modify the fake data generation in `server/scripts/seedData.js`
+2. Run: `npm run seed:fake`
+3. ⚠️ Remember: This generates FAKE data and should never be used in production
+
+**Updating Index Mappings:**
+1. Modify the index mappings in `server/scripts/setupIndices.js`
+2. Re-run: `node server/scripts/setupIndices.js`
 
 ### Customizing Search
 

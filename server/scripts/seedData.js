@@ -122,9 +122,14 @@ async function generateContent(count = 50) {
 
 async function seedData() {
   try {
-    console.log('Starting data seeding...');
+    console.log('⚠️  WARNING: This script generates FAKE/TEST data using Faker.js');
+    console.log('⚠️  This data is for testing purposes only and should NOT be used in production!');
+    console.log('');
+    console.log('📝 For real doctor data, use: node server/scripts/importDoctorsCSV.js');
+    console.log('');
+    console.log('Starting fake data generation...');
 
-    // Generate sample data
+    // Generate FAKE sample data (for testing only)
     const doctors = await generateDoctors(100);
     const locations = await generateLocations(20);
     const content = await generateContent(50);
@@ -159,8 +164,9 @@ async function seedData() {
     // Refresh indices
     await client.indices.refresh({ index: 'doctors,locations,content' });
 
-    console.log(`Seeded ${doctors.length} doctors, ${locations.length} locations, and ${content.length} content articles`);
-    console.log('Data seeding completed successfully!');
+    console.log(`⚠️  Seeded ${doctors.length} FAKE doctors, ${locations.length} locations, and ${content.length} content articles`);
+    console.log('⚠️  Remember: This is TEST data only. Use importDoctorsCSV.js for real data!');
+    console.log('Fake data generation completed.');
 
   } catch (error) {
     console.error('Error seeding data:', error);

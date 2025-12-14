@@ -1,6 +1,5 @@
 const { Client } = require('@elastic/elasticsearch');
 const setupIndices = require('./setupIndices');
-const { seedData } = require('./seedData');
 
 const client = new Client({
   node: process.env.ELASTICSEARCH_URL || 'http://localhost:9200',
@@ -42,10 +41,18 @@ async function startup() {
     const response = await client.count({ index: 'doctors,locations,content' });
     
     if (response.body.count === 0) {
-      console.log('🌱 Seeding with sample data...');
-      await seedData();
+      console.log('⚠️  No data found in Elasticsearch indices.');
+      console.log('');
+      console.log('📝 To import real doctor data:');
+      console.log('   node server/scripts/importDoctorsCSV.js');
+      console.log('');
+      console.log('🧪 To generate FAKE/TEST data (for testing only):');
+      console.log('   npm run seed:fake');
+      console.log('');
+      console.log('⚠️  IMPORTANT: The app will not work properly without doctor data.');
+      console.log('   Please import real data using the CSV file (doctorsdata.CSV is included).');
     } else {
-      console.log(`📊 Found ${response.body.count} existing documents, skipping seed`);
+      console.log(`✅ Found ${response.body.count} existing documents in indices`);
     }
     
     console.log('✅ Setup completed successfully!');

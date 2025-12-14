@@ -164,11 +164,14 @@ function showSummary() {
   console.log('📝 Next Steps:\n');
   console.log('1. Make sure Elasticsearch is running: npm run elasticsearch');
   console.log('2. Set up indices: node server/scripts/setupIndices.js');
-  console.log('3. Import doctor data: node server/scripts/importDoctorsCSV.js');
+  console.log('3. Import REAL doctor data: node server/scripts/importDoctorsCSV.js');
   console.log('   (doctorsdata.CSV is included in the repository)');
+  console.log('   ⚠️  IMPORTANT: The app requires real doctor data to work properly');
   console.log('4. (Optional) Add YOUR OWN API key to server/config.env for LLM summaries');
   console.log('   Get free Groq key: https://console.groq.com/keys');
   console.log('5. Start the app: npm run dev\n');
+  console.log('⚠️  Note: Fake/test data is NOT generated automatically.');
+  console.log('   Only use "npm run seed:fake" if you explicitly need test data.\n');
 
   console.log('🎉 You\'re all set! Happy coding!\n');
 }
