@@ -59,7 +59,11 @@ async function autoSetup() {
     } catch (error) {
       console.error('❌ Cannot connect to Elasticsearch:', error.message);
       console.log('⚠️  Please ensure Elasticsearch is running and ELASTICSEARCH_URL is set');
-      process.exit(1);
+      console.log(`⚠️  Current ELASTICSEARCH_URL: ${process.env.ELASTICSEARCH_URL || 'not set'}`);
+      // Don't exit in production - let the app start and show errors in health check
+      if (process.env.NODE_ENV !== 'production') {
+        process.exit(1);
+      }
     }
     
     // Check if indices exist

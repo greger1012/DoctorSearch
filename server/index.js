@@ -57,11 +57,14 @@ app.use((error, req, res, next) => {
 });
 
 // Auto-setup check on startup (non-blocking)
-if (process.env.NODE_ENV === 'production') {
+// Only run if ELASTICSEARCH_URL is set (don't block startup if not configured yet)
+if (process.env.NODE_ENV === 'production' && process.env.ELASTICSEARCH_URL) {
   const autoSetup = require('./scripts/autoSetup');
   autoSetup().catch(err => {
     console.error('Auto-setup check failed:', err);
   });
+} else if (process.env.NODE_ENV === 'production' && !process.env.ELASTICSEARCH_URL) {
+  console.log('⚠️  ELASTICSEARCH_URL not set. Please configure it in Railway environment variables.');
 }
 
 app.listen(PORT, () => {
