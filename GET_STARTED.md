@@ -52,12 +52,21 @@ Before downloading the code, install these two things:
 3. **Select "Extract All..."**
 4. **Choose where to extract** (e.g., `C:\Users\YourName\DoctorSearch`)
 5. **Click "Extract"**
-6. You'll now have a folder called `DoctorSearch-main` (or just `DoctorSearch`)
+6. You'll now have a folder called `DoctorSearch-main`
 
-### Step 4: Open the Folder
+### Step 4: Navigate to the Correct Folder
 
-1. **Navigate to the extracted folder** in File Explorer
-2. **Open it** - you should see files like `package.json`, `README.md`, `server`, `client`, etc.
+**Important**: GitHub ZIP files sometimes create a nested folder. You need to find the folder that contains `package.json`.
+
+1. **Open the extracted folder** in File Explorer
+2. **Look for `package.json`** - this file should be visible in the folder
+3. **If you see another `DoctorSearch-main` folder inside**, open that one instead
+4. **You're in the right place when you see**:
+   - `package.json` file
+   - `README.md` file
+   - `server` folder
+   - `client` folder
+   - `doctorsdata.CSV` file
 
 ---
 

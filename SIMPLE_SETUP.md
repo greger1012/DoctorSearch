@@ -10,7 +10,11 @@ This guide shows you how to download and run the app on your computer, just like
 4. **Extract the ZIP file** to a folder on your computer
    - Example: `C:\Users\YourName\DoctorSearch`
    - Or: `C:\Users\YourName\Desktop\DoctorSearch`
-5. **Open the extracted folder** in File Explorer
+5. **Navigate to the correct folder**:
+   - Open the extracted folder in File Explorer
+   - **Look for `package.json`** - this file should be visible
+   - If you see another `DoctorSearch-main` folder inside, open that one
+   - **You're in the right place when you see**: `package.json`, `README.md`, `server` folder, `client` folder
 
 ## Step 2: Install Prerequisites
 
