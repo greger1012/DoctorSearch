@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useParams, Link, useSearchParams } from 'react-router-dom';
-import { ArrowLeft, Star, Phone, Mail, MapPin, Clock, Calendar, Users, Sparkles } from 'lucide-react';
+import { ArrowLeft, Star, Phone, MapPin, Clock, Calendar, Users, Sparkles } from 'lucide-react';
 import axios from 'axios';
 
 const PageContainer = styled.div`
@@ -131,29 +131,30 @@ const InfoItem = styled.div`
   color: #4a5568;
 `;
 
-const ScheduleGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1rem;
-`;
+// Schedule components - commented out as they're not currently used
+// const ScheduleGrid = styled.div`
+//   display: grid;
+//   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+//   gap: 1rem;
+// `;
 
-const ScheduleDay = styled.div`
-  padding: 0.75rem;
-  background: #f7fafc;
-  border-radius: 0.5rem;
-  text-align: center;
-`;
+// const ScheduleDay = styled.div`
+//   padding: 0.75rem;
+//   background: #f7fafc;
+//   border-radius: 0.5rem;
+//   text-align: center;
+// `;
 
-const DayName = styled.div`
-  font-weight: 600;
-  color: #2d3748;
-  margin-bottom: 0.25rem;
-`;
+// const DayName = styled.div`
+//   font-weight: 600;
+//   color: #2d3748;
+//   margin-bottom: 0.25rem;
+// `;
 
-const DayHours = styled.div`
-  font-size: 0.875rem;
-  color: #4a5568;
-`;
+// const DayHours = styled.div`
+//   font-size: 0.875rem;
+//   color: #4a5568;
+// `;
 
 const ExplanationCard = styled.div`
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);

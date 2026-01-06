@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import SearchBox from '../components/SearchBox';
 import SearchResults from '../components/SearchResults';
@@ -102,7 +102,7 @@ const SearchPage = () => {
     "Cancer treatment locations"
   ];
 
-  const handleSearch = async (query, searchFilters = {}) => {
+  const handleSearch = useCallback(async (query, searchFilters = {}) => {
     if (!query.trim()) return;
 
     setLoading(true);
@@ -151,7 +151,7 @@ const SearchPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
 
   const handleFiltersChange = (newFilters, options = {}) => {
     setFilters(newFilters);
@@ -167,6 +167,7 @@ const SearchPage = () => {
   // Load some initial results on page load
   useEffect(() => {
     handleSearch('UCSF doctors');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
