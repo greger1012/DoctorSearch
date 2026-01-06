@@ -18,6 +18,7 @@
     "import:locations": "node server/scripts/importLocationCatalog.js",
     "import:excel": "node server/scripts/importExcelData.js",
     "fix:locations": "node server/scripts/fixDoctorLocations.js",
+    "check:data": "node server/scripts/checkDataStatus.js",
     "start": "node server/index.js",
     "postinstall": "cd client && npm install"
   },
