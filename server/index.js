@@ -1,8 +1,16 @@
 const express = require('express');
 const cors = require('cors');
 const { Client } = require('@elastic/elasticsearch');
-// Load environment variables from config.env
-require('dotenv').config({ path: './config.env' });
+const fs = require('fs');
+const path = require('path');
+
+// Load environment variables - try config.env first, then fall back to .env
+const configEnvPath = path.join(__dirname, '../config.env');
+if (fs.existsSync(configEnvPath)) {
+  require('dotenv').config({ path: configEnvPath });
+} else {
+  require('dotenv').config(); // Falls back to .env or system env vars
+}
 
 const app = express();
 const PORT = process.env.PORT || 3001;
