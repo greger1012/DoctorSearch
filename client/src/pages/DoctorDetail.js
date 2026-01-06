@@ -191,8 +191,8 @@ const DoctorDetail = () => {
       try {
         console.log('Fetching doctor with ID:', id);
         const url = query 
-          ? `http://localhost:3001/api/doctors/${id}?query=${encodeURIComponent(query)}`
-          : `http://localhost:3001/api/doctors/${id}`;
+          ? `/api/doctors/${id}?query=${encodeURIComponent(query)}`
+          : `/api/doctors/${id}`;
         const response = await axios.get(url);
         console.log('Doctor data received:', response.data);
         setDoctor(response.data);
