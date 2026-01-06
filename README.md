@@ -20,33 +20,58 @@ A modern, AI-powered unified search solution for UCSF Health that combines docto
 - **AI Summaries**: Groq/OpenAI/Hugging Face LLM integration
 - **Data**: JSON-based with comprehensive disease database
 
-## Quick Start
+## Quick Start (Local Setup)
 
 ### Prerequisites
 
-- Node.js 16+ 
-- Docker and Docker Compose
-- Git
+- **Node.js 16+** - Download from [nodejs.org](https://nodejs.org/)
+- **Docker Desktop** - Download from [docker.com](https://www.docker.com/products/docker-desktop)
+- **Git** (optional, for cloning) - Or just download ZIP from GitHub
 
-### Installation
+### Simple Setup Steps
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/greger1012/DoctorSearch.git
-   cd DoctorSearch
-   ```
+1. **Get the code**
+   - **Option A**: Download ZIP from GitHub and extract it
+   - **Option B**: `git clone https://github.com/greger1012/DoctorSearch.git`
+   - Open terminal in the project folder
 
-2. **Install dependencies**
+2. **Install everything** (one command):
    ```bash
    npm run setup
    ```
+   This installs all dependencies. Takes 2-3 minutes.
 
-   **Quick setup check**: After installing, run `npm run setup:check` to verify your setup.
-
-3. **Start Elasticsearch and Kibana**
+3. **Start Elasticsearch** (in one terminal):
    ```bash
    npm run elasticsearch
    ```
+   Wait 30 seconds for it to start. Keep this terminal open.
+
+4. **Import your data** (in a new terminal):
+   ```bash
+   npm run startup
+   npm run import:excel
+   npm run import:locations
+   ```
+   This imports all doctors, services, and locations. Takes 5-10 minutes total.
+
+5. **Start the app**:
+   ```bash
+   npm run dev
+   ```
+   Opens automatically at http://localhost:3000
+
+**That's it!** Your app is now running locally.
+
+### Next Time (After First Setup)
+
+Just run:
+```bash
+npm run elasticsearch    # In one terminal
+npm run dev              # In another terminal
+```
+
+**See [SIMPLE_SETUP.md](./SIMPLE_SETUP.md) for detailed step-by-step instructions.**
 
 4. **Set up Elasticsearch indices**
    ```bash

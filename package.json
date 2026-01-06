@@ -20,7 +20,8 @@
     "fix:locations": "node server/scripts/fixDoctorLocations.js",
     "check:data": "node server/scripts/checkDataStatus.js",
     "start": "node server/index.js",
-    "postinstall": "cd client && npm install"
+    "postinstall": "cd client && npm install",
+    "quick-start": "npm run elasticsearch && timeout /t 30 /nobreak >nul 2>&1 || sleep 30 && npm run startup && npm run import:excel && npm run import:locations && echo. && echo ✅ Setup complete! Now run: npm run dev"
   },
   "keywords": [
     "search",
