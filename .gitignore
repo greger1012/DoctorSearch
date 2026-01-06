@@ -134,5 +134,5 @@ fix-and-test.bat
 import-real-data.bat
 create-archive.bat
 
-# Docker (optional - might be needed, but let's exclude for now)
-docker-compose.yml
+# Docker data directories (keep docker-compose.yml - it's needed!)
+elasticsearch_data/
