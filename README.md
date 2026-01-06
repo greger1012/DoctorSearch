@@ -2,6 +2,8 @@
 
 A modern, AI-powered unified search solution for UCSF Health that combines doctor search, location search, and content search into a single, intelligent interface. The app receives a prompt and finds the best doctor for your needs based on that prompt.
 
+**🚀 Designed to run locally on your computer** - Download, install, and run. No cloud deployment needed!
+
 ## Features
 
 - **Unified Search**: Single search box that finds doctors, locations, and health information
