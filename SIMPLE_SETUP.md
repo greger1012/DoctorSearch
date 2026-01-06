@@ -2,16 +2,15 @@
 
 This guide shows you how to download and run the app on your computer, just like your client will.
 
-## Step 1: Download the Code
+## Step 1: Download the Code from GitHub
 
-**Option A: From GitHub (for your client)**
-1. Go to: https://github.com/greger1012/DoctorSearch
-2. Click the green **"Code"** button
-3. Click **"Download ZIP"**
-4. Extract the ZIP file to a folder (e.g., `C:\Users\YourName\DoctorSearch`)
-
-**Option B: You already have it**
-- You're already in the project directory: `C:\Users\grego\interviewprep`
+1. **Go to GitHub**: https://github.com/greger1012/DoctorSearch
+2. **Click the green "Code" button** (top right of the page)
+3. **Click "Download ZIP"**
+4. **Extract the ZIP file** to a folder on your computer
+   - Example: `C:\Users\YourName\DoctorSearch`
+   - Or: `C:\Users\YourName\Desktop\DoctorSearch`
+5. **Open the extracted folder** in File Explorer
 
 ## Step 2: Install Prerequisites
 
@@ -29,25 +28,31 @@ You need these installed on your computer:
 
 ## Step 3: Open Terminal in Project Folder
 
-**Windows:**
-1. Navigate to the project folder in File Explorer
-2. Right-click in the folder
+**Windows (Easiest):**
+1. In File Explorer, navigate to the folder you extracted (e.g., `DoctorSearch`)
+2. **Right-click in an empty area** of the folder
 3. Select **"Open in Terminal"** or **"Open PowerShell window here"**
 
 **Or manually:**
-```powershell
-cd C:\Users\grego\interviewprep
-```
+1. Press `Windows Key + R`
+2. Type `powershell` and press Enter
+3. Type: `cd C:\Users\YourName\DoctorSearch` (replace with your actual folder path)
+4. Press Enter
 
 ## Step 4: Install Dependencies
 
-Run this command (takes 2-3 minutes):
+In the terminal window, run this command (takes 2-3 minutes):
 
 ```powershell
 npm run setup
 ```
 
-This installs all the required packages.
+**What this does:**
+- Installs all required packages for the backend
+- Installs all required packages for the frontend
+- Sets up everything needed to run the app
+
+**Wait for it to finish** - you'll see "added X packages" messages. This is normal and takes a few minutes.
 
 ## Step 5: Start Elasticsearch
 
@@ -61,10 +66,19 @@ Wait about 30 seconds for Elasticsearch to start. You'll see messages like "star
 
 ## Step 6: Import Your Data
 
-Open a **NEW terminal window** (keep the Elasticsearch one running) and run:
+Open a **NEW terminal window** (keep the Elasticsearch one running).
+
+**Important**: Navigate to the same folder where you extracted the code:
 
 ```powershell
-cd C:\Users\grego\interviewprep
+cd C:\Users\YourName\DoctorSearch
+```
+
+(Replace `YourName\DoctorSearch` with your actual folder path)
+
+Then run:
+
+```powershell
 npm run startup
 ```
 
@@ -132,13 +146,20 @@ When you're done:
 
 After the first setup, you only need:
 
-1. **Start Elasticsearch**:
+1. **Open terminal in your project folder**:
+   ```powershell
+   cd C:\Users\YourName\DoctorSearch
+   ```
+
+2. **Start Elasticsearch** (in one terminal):
    ```powershell
    npm run elasticsearch
    ```
+   Wait 30 seconds, keep this terminal open.
 
-2. **Start the app**:
+3. **Start the app** (in a new terminal):
    ```powershell
+   cd C:\Users\YourName\DoctorSearch
    npm run dev
    ```
 
