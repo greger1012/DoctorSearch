@@ -14,7 +14,12 @@
     "elasticsearch:stop": "docker-compose down",
     "seed:fake": "node server/scripts/seedData.js",
     "startup": "node server/scripts/startup.js",
-    "init": "npm run elasticsearch && sleep 10 && npm run startup"
+    "init": "npm run elasticsearch && sleep 10 && npm run startup",
+    "import:locations": "node server/scripts/importLocationCatalog.js",
+    "import:excel": "node server/scripts/importExcelData.js",
+    "fix:locations": "node server/scripts/fixDoctorLocations.js",
+    "start": "node server/index.js",
+    "postinstall": "cd client && npm install"
   },
   "keywords": [
     "search",

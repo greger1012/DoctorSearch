@@ -21,6 +21,17 @@ app.use('/api/search', require('./routes/search'));
 app.use('/api/doctors', require('./routes/doctors'));
 app.use('/api/locations', require('./routes/locations'));
 
+// Serve static files from React app in production
+if (process.env.NODE_ENV === 'production') {
+  const path = require('path');
+  app.use(express.static(path.join(__dirname, '../client/build')));
+  
+  // Serve React app for all non-API routes
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+  });
+}
+
 // Health check
 app.get('/health', async (req, res) => {
   try {
@@ -37,7 +48,16 @@ app.use((error, req, res, next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
+// Auto-setup check on startup (non-blocking)
+if (process.env.NODE_ENV === 'production') {
+  const autoSetup = require('./scripts/autoSetup');
+  autoSetup().catch(err => {
+    console.error('Auto-setup check failed:', err);
+  });
+}
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Elasticsearch URL: ${process.env.ELASTICSEARCH_URL || 'http://localhost:9200'}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });

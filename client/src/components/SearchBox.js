@@ -128,7 +128,7 @@ const SearchBox = ({ onSearch, onFiltersChange, filters }) => {
       try {
         const [specialtiesRes, locationsRes] = await Promise.all([
           axios.get('/api/doctors/specialties/list'),
-          axios.get('/api/doctors/locations/list')
+          axios.get('/api/locations/list')  // Use locations endpoint instead of doctors/locations
         ]);
         setAvailableSpecialties(
           (specialtiesRes.data || [])

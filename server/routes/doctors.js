@@ -439,7 +439,8 @@ router.get('/specialties/list', async (req, res) => {
   }
 });
 
-// Get available practice locations
+// Get available practice locations (from doctors - for backward compatibility)
+// NOTE: Use /api/locations/list for all locations from LocationCatalog
 router.get('/locations/list', async (req, res) => {
   try {
     const response = await client.search({
@@ -449,7 +450,7 @@ router.get('/locations/list', async (req, res) => {
           locations: {
             terms: {
               field: 'location.keyword',
-              size: 100
+              size: 200  // Increased size
             }
           }
         },

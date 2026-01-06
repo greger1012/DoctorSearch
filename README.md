@@ -205,12 +205,27 @@ The application uses Styled Components for styling. Global styles are defined in
 
 ## Production Deployment
 
+Want to deploy this app so your client can access it with one click? See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions.
+
+**Quick Deploy Options:**
+- **Railway** (Recommended): One-click deployment with GitHub integration
+- **Render**: Similar to Railway, great for demos  
+- **Vercel + Backend**: Split frontend/backend deployment
+
+All deployment options support:
+- ✅ Automatic builds from GitHub
+- ✅ Environment variable configuration
+- ✅ Production-ready setup
+- ✅ All your data included
+
+### Manual Deployment Steps
+
 1. Build the frontend:
    ```bash
    npm run build
    ```
 
-2. Set up production Elasticsearch cluster
+2. Set up production Elasticsearch cluster (or use managed service)
 
 3. Configure environment variables:
    ```bash
@@ -219,6 +234,8 @@ The application uses Styled Components for styling. Global styles are defined in
    ```
 
 4. Deploy the backend and serve the built frontend
+
+For detailed deployment instructions, see [DEPLOYMENT.md](./DEPLOYMENT.md).
 
 ## Contributing
 

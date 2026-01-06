@@ -1102,7 +1102,29 @@ function buildFilters(filters, timeRange) {
   }
 
   if (filters.location) {
-    filterArray.push({ term: { 'location.keyword': filters.location } });
+    // Match against LocationCatalog cleanName (for location documents)
+    // Also match against doctor location field and depLinks.locationName (for doctor documents)
+    filterArray.push({
+      bool: {
+        should: [
+          // For location documents - exact match on cleanName
+          { term: { 'cleanName.keyword': filters.location } },
+          { term: { 'name.keyword': filters.location } },
+          // For doctor documents - match on location field or depLinks
+          { term: { 'location.keyword': filters.location } },
+          // Match in nested depLinks.locationName (doctors linked via DEPLinks sheet)
+          {
+            nested: {
+              path: 'depLinks',
+              query: {
+                term: { 'depLinks.locationName.keyword': filters.location }
+              }
+            }
+          }
+        ],
+        minimum_should_match: 1
+      }
+    });
   }
 
   if (filters.acceptingPatients !== undefined) {
@@ -1173,7 +1195,7 @@ function buildDoctorQuery(originalQuery, cleanQuery, filters, timeRange, prefere
               {
                 multi_match: {
         query: originalQuery,
-        fields: ['specialty^8', 'boardCertifications^6', 'name^3', 'location^2'],
+        fields: ['specialty^8', 'specialties^8', 'boardCertifications^6', 'name^3', 'location^2'],
         type: 'phrase',
         boost: 5
       }
@@ -1181,6 +1203,15 @@ function buildDoctorQuery(originalQuery, cleanQuery, filters, timeRange, prefere
     {
       match: {
         specialty: {
+          query: queryText,
+          boost: 8,
+          fuzziness: 0
+        }
+      }
+    },
+    {
+      match: {
+        specialties: {
           query: queryText,
           boost: 8,
           fuzziness: 0
@@ -1196,10 +1227,19 @@ function buildDoctorQuery(originalQuery, cleanQuery, filters, timeRange, prefere
       }
     },
     {
+      match_phrase_prefix: {
+        specialties: {
+          query: queryText,
+          boost: 6
+        }
+      }
+    },
+    {
       multi_match: {
         query: queryText,
                   fields: [
           'specialty^6',
+          'specialties^6',
           'boardCertifications^4',
           'department^3',
           'description^2'
@@ -1217,7 +1257,9 @@ function buildDoctorQuery(originalQuery, cleanQuery, filters, timeRange, prefere
         fuzziness: 1,
         prefix_length: 2
       }
-    }
+    },
+    // Note: Nested service fields are searched via the main specialties field above
+    // which includes all matched specialties from ServiceProviders
   ];
 
   if (preferences.specialty) {
@@ -1303,7 +1345,7 @@ function buildDoctorQuery(originalQuery, cleanQuery, filters, timeRange, prefere
       by_location: {
         terms: {
           field: 'location.keyword',
-          size: 20
+          size: 200  // Increased to show more locations
         }
       },
       accepting_patients: {
@@ -1409,7 +1451,16 @@ function buildLocationQuery(originalQuery, cleanQuery, filters, preferences = {}
       bool: {
         should: shouldClauses,
         filter: filters.location
-          ? [{ term: { 'location.keyword': filters.location } }]
+          ? [{
+              bool: {
+                should: [
+                  { term: { 'cleanName.keyword': filters.location } },  // Exact LocationCatalog match
+                  { term: { 'name.keyword': filters.location } },        // Location name match
+                  // For location queries, we want exact matches on cleanName/name
+                ],
+                minimum_should_match: 1
+              }
+            }]
           : [],
         minimum_should_match: shouldClauses.length > 0 ? 1 : 0
       }
@@ -1425,11 +1476,17 @@ function buildLocationQuery(originalQuery, cleanQuery, filters, preferences = {}
         },
         aggs: {
       by_location: {
-            terms: {
-          field: 'location.keyword',
-          size: 20
-            }
-          },
+        terms: {
+          field: 'name.keyword',  // Use name from locations index, not location.keyword
+          size: 200  // Increased to show more locations
+        }
+      },
+      by_clean_name: {
+        terms: {
+          field: 'cleanName.keyword',  // Also aggregate by cleanName
+          size: 200
+        }
+      },
           by_specialty: {
             terms: {
           field: 'specialties',
@@ -1442,7 +1499,12 @@ function buildLocationQuery(originalQuery, cleanQuery, filters, preferences = {}
   };
 }
 
-// Build query for content/articles
+// Build query for content/articles (including medical services)
+// Specialty hierarchy from Services tab:
+// - primarySpecialties: Primary Specialty 1 & 2 (main specialty connections, highest priority)
+// - relatedSpecialties: Related Specialty 1-6 (subspecialty connections, secondary priority)
+// - specialties: Combined list for general search
+// When searching, primary specialties get higher boost than related specialties to reflect hierarchy
 function buildContentQuery(originalQuery, cleanQuery, filters, timeRange, preferences = {}) {
   const queryText = cleanQuery || originalQuery;
 
@@ -1458,10 +1520,18 @@ function buildContentQuery(originalQuery, cleanQuery, filters, timeRange, prefer
     });
   }
 
+  // Filter by specialty - checks all specialty fields to find services connected to this specialty
+  // This ensures services are found whether the specialty is primary or related
   if (filters.specialty) {
     filterClauses.push({
-      term: {
-        tags: filters.specialty
+      bool: {
+        should: [
+          { term: { tags: filters.specialty } },
+          { term: { specialties: filters.specialty } },
+          { term: { primarySpecialties: filters.specialty } }, // Primary specialty connection
+          { term: { relatedSpecialties: filters.specialty } }  // Related/subspecialty connection
+        ],
+        minimum_should_match: 1
       }
     });
   }
@@ -1470,7 +1540,27 @@ function buildContentQuery(originalQuery, cleanQuery, filters, timeRange, prefer
     {
       multi_match: {
         query: queryText,
-        fields: ['title^5', 'summary^3', 'content', 'tags^4', 'category^2'],
+        fields: ['title^5', 'summary^3', 'content', 'tags^4', 'category^2', 'name^5', 'specialties^3', 'primarySpecialties^4', 'relatedSpecialties^2', 'services^3', 'providerNames^2', 'locations^2', 'fullPath^1'],
+        type: 'best_fields',
+        fuzziness: 1,
+        prefix_length: 2
+      }
+    },
+    // Explicitly search primary specialties with higher boost (these are the main connections)
+    {
+      multi_match: {
+        query: queryText,
+        fields: ['primarySpecialties^5'],
+        type: 'best_fields',
+        fuzziness: 1,
+        prefix_length: 2
+      }
+    },
+    // Search related specialties (subspecialties) with medium boost
+    {
+      multi_match: {
+        query: queryText,
+        fields: ['relatedSpecialties^3'],
         type: 'best_fields',
         fuzziness: 1,
         prefix_length: 2
@@ -1479,13 +1569,47 @@ function buildContentQuery(originalQuery, cleanQuery, filters, timeRange, prefer
   ];
 
   if (preferences.specialty) {
+    // When a specialty is recognized, search in all specialty fields with proper hierarchy
     shouldClauses.push({
-      match: {
-        tags: {
-          query: preferences.specialty,
-          operator: 'and',
-          boost: 4
-        }
+      bool: {
+        should: [
+          // Primary specialties get highest boost (main specialty connections)
+          {
+            term: {
+              'primarySpecialties': {
+                value: preferences.specialty,
+                boost: 6
+              }
+            }
+          },
+          // Related specialties get medium boost (subspecialty connections)
+          {
+            term: {
+              'relatedSpecialties': {
+                value: preferences.specialty,
+                boost: 4
+              }
+            }
+          },
+          // General specialties field
+          {
+            term: {
+              'specialties': {
+                value: preferences.specialty,
+                boost: 3
+              }
+            }
+          },
+          {
+            term: {
+              'tags': {
+                value: preferences.specialty,
+                boost: 2
+              }
+            }
+          }
+        ],
+        minimum_should_match: 1
       }
     });
   }
@@ -1496,13 +1620,39 @@ function buildContentQuery(originalQuery, cleanQuery, filters, timeRange, prefer
       if (!trimmed) {
         return;
       }
+      // Boost searches for related specialties too
       shouldClauses.push({
-        match: {
-          tags: {
-            query: trimmed,
-            operator: 'and',
-            boost: 3.5
-          }
+        bool: {
+          should: [
+            {
+              match: {
+                primarySpecialties: {
+                  query: trimmed,
+                  operator: 'and',
+                  boost: 4.5
+                }
+              }
+            },
+            {
+              match: {
+                relatedSpecialties: {
+                  query: trimmed,
+                  operator: 'and',
+                  boost: 3.5
+                }
+              }
+            },
+            {
+              match: {
+                tags: {
+                  query: trimmed,
+                  operator: 'and',
+                  boost: 3.5
+                }
+              }
+            }
+          ],
+          minimum_should_match: 1
         }
       });
     });
@@ -1520,7 +1670,9 @@ function buildContentQuery(originalQuery, cleanQuery, filters, timeRange, prefer
       fields: {
         title: { number_of_fragments: 0 },
         summary: { fragment_size: 150 },
-        content: { fragment_size: 150 }
+        content: { fragment_size: 150 },
+        name: { number_of_fragments: 0 },
+        specialties: { fragment_size: 150 }
       },
       pre_tags: ['<em>'],
       post_tags: ['</em>']

@@ -578,9 +578,87 @@ async function importDoctorsCSV() {
             institution: cleanString(row['INSTITUTION']),
               graduationDate,
             locationCode: cleanString(row['SUBGROUP']),
-              location: locationMapping[cleanString(row['SUBGROUP'])] || cleanString(row['PRIMARY LOCATION']) || 'UCSF Medical Center',
               address: `${cleanString(row['PRIMARYADDRESSLINE1'])} ${cleanString(row['PRIMARYADDRESSLINE2'])}`.replace(/\s+/g, ' ').trim(),
             city: cleanString(row['PRIMARYCITY']),
+            // Determine location: use mapping, PRIMARY LOCATION, or derive from city/address
+            location: (() => {
+              const subgroup = cleanString(row['SUBGROUP']);
+              const primaryLocation = cleanString(row['PRIMARY LOCATION']);
+              const city = cleanString(row['PRIMARYCITY']);
+              const address = `${cleanString(row['PRIMARYADDRESSLINE1'])} ${cleanString(row['PRIMARYADDRESSLINE2'])}`.replace(/\s+/g, ' ').trim();
+              
+              // First try location mapping
+              if (subgroup && locationMapping[subgroup]) {
+                return locationMapping[subgroup];
+              }
+              
+              // Then try PRIMARY LOCATION
+              if (primaryLocation) {
+                return primaryLocation;
+              }
+              
+              // Derive from city if available
+              if (city) {
+                // Map common cities to their location names
+                const cityToLocation = {
+                  'Berkeley': 'Berkeley',
+                  'Oakland': 'Oakland',
+                  'Fremont': 'Fremont',
+                  'Walnut Creek': 'Walnut Creek',
+                  'San Francisco': 'San Francisco',
+                  'San Rafael': 'San Rafael',
+                  'Redwood Shores': 'Redwood Shores',
+                  'Monterey': 'Monterey',
+                  'Santa Rosa': 'Santa Rosa'
+                };
+                
+                if (cityToLocation[city]) {
+                  return cityToLocation[city];
+                }
+                
+                // If city is San Francisco, try to determine which campus from address
+                if (city === 'San Francisco' && address) {
+                  if (address.toLowerCase().includes('parnassus') || address.toLowerCase().includes('505 parnassus')) {
+                    return 'Parnassus Heights';
+                  } else if (address.toLowerCase().includes('mission bay') || address.toLowerCase().includes('1825 4th')) {
+                    return 'Mission Bay';
+                  } else if (address.toLowerCase().includes('mount zion') || address.toLowerCase().includes('1600 divisadero')) {
+                    return 'Mount Zion';
+                  } else if (address.toLowerCase().includes('san francisco general') || address.toLowerCase().includes('sfgh')) {
+                    return 'San Francisco General';
+                  }
+                }
+                
+                // Return city name as location if no specific mapping
+                return city;
+              }
+              
+              // Last resort: try to extract from address
+              if (address) {
+                const addressLower = address.toLowerCase();
+                if (addressLower.includes('parnassus') || addressLower.includes('505 parnassus')) {
+                  return 'Parnassus Heights';
+                } else if (addressLower.includes('mission bay') || addressLower.includes('1825 4th')) {
+                  return 'Mission Bay';
+                } else if (addressLower.includes('mount zion') || addressLower.includes('1600 divisadero')) {
+                  return 'Mount Zion';
+                } else if (addressLower.includes('san francisco general') || addressLower.includes('sfgh')) {
+                  return 'San Francisco General';
+                } else if (addressLower.includes('berkeley')) {
+                  return 'Berkeley';
+                } else if (addressLower.includes('oakland')) {
+                  return 'Oakland';
+                } else if (addressLower.includes('fremont')) {
+                  return 'Fremont';
+                } else if (addressLower.includes('walnut creek')) {
+                  return 'Walnut Creek';
+                }
+              }
+              
+              // Final fallback - prefer city name over generic "UCSF Medical Center"
+              // This ensures doctors in Berkeley show "Berkeley" not "UCSF Medical Center"
+              return city || 'UCSF Medical Center';
+            })(),
             state: cleanString(row['PRIMARYSTATE']),
             zip: cleanString(row['PRIMARYZIP']),
             phone: cleanString(row['PRIMARYPHONE1']),

@@ -600,6 +600,13 @@ const SearchResults = ({
               </div>
             )}
             
+            {/* Matched Specialties from ServiceProviders */}
+            {source.specialties && Array.isArray(source.specialties) && source.specialties.length > 0 && (
+              <div style={{ color: '#667eea', fontSize: '0.875rem', marginTop: '0.25rem', fontWeight: 500 }}>
+                <strong>Service Specialties:</strong> {[...new Set(source.specialties)].join(', ')}
+              </div>
+            )}
+            
             {/* Board Certifications */}
             {source.boardCertifications && source.boardCertifications.length > 0 && (
               <div style={{ color: '#4a5568', fontSize: '0.875rem', marginTop: '0.25rem' }}>

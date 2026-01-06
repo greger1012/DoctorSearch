@@ -274,6 +274,12 @@ const DoctorDetail = () => {
                   ` • ${doctor.secondarySpecialties.join(', ')}`}
               </Specialty>
             )}
+            {/* Matched Specialties from ServiceProviders */}
+            {doctor?.specialties && Array.isArray(doctor.specialties) && doctor.specialties.length > 0 && (
+              <div style={{ color: '#667eea', fontSize: '0.875rem', marginTop: '0.5rem', fontWeight: 500 }}>
+                <strong>Service Specialties:</strong> {[...new Set(doctor.specialties)].join(', ')}
+              </div>
+            )}
             {(doctor?.location || fullAddress) && (
               <Location>
                 <MapPin size={20} />
