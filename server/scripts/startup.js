@@ -40,7 +40,10 @@ async function startup() {
     // Check if data already exists
     const response = await client.count({ index: 'doctors,locations,content' });
     
-    if (response.body.count === 0) {
+    // Handle both old and new Elasticsearch client response formats
+    const count = response.body?.count ?? response.count ?? 0;
+    
+    if (count === 0) {
       console.log('⚠️  No data found in Elasticsearch indices.');
       console.log('');
       console.log('📝 To import real doctor data:');
@@ -52,7 +55,7 @@ async function startup() {
       console.log('⚠️  IMPORTANT: The app will not work properly without doctor data.');
       console.log('   Please import real data using the CSV file (doctorsdata.CSV is included).');
     } else {
-      console.log(`✅ Found ${response.body.count} existing documents in indices`);
+      console.log(`✅ Found ${count} existing documents in indices`);
     }
     
     console.log('✅ Setup completed successfully!');
