@@ -20,6 +20,27 @@ Before downloading the code, install these two things:
 
 ### 2. Install Docker Desktop
 
+**⚠️ IMPORTANT: Docker requires virtualization to be enabled in your BIOS**
+
+Before installing Docker, you may need to enable virtualization in your computer's BIOS settings:
+
+**How to enable virtualization:**
+1. **Restart your computer**
+2. **Enter BIOS/UEFI settings**:
+   - For most computers: Press `F2`, `F10`, `F12`, or `Delete` repeatedly as the computer starts
+   - For Windows 10/11: Hold `Shift` while clicking "Restart" → Troubleshoot → Advanced Options → UEFI Firmware Settings
+3. **Find virtualization settings** (varies by manufacturer):
+   - Look for: "Virtualization", "Intel VT-x", "AMD-V", "SVM Mode", or "Hyper-V"
+   - Common locations: Advanced → CPU Configuration, or System Configuration
+4. **Enable it**: Set to "Enabled"
+5. **Save and exit** (usually F10)
+6. **Restart your computer**
+
+**If you're not sure how to access BIOS:**
+- Search online for: "[Your computer brand/model] enable virtualization BIOS"
+- Example: "Dell enable virtualization BIOS" or "HP enable virtualization BIOS"
+
+**Then install Docker Desktop:**
 1. Go to: https://www.docker.com/products/docker-desktop
 2. Download Docker Desktop for Windows
 3. Run the installer

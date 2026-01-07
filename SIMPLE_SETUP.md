@@ -27,7 +27,10 @@ You need these installed on your computer:
 
 2. **Docker Desktop** (for Elasticsearch)
    - Download from: https://www.docker.com/products/docker-desktop
-   - Install it
+   - **⚠️ IMPORTANT**: Docker requires virtualization enabled in BIOS
+   - If Docker won't start, enable "Virtualization", "Intel VT-x", or "AMD-V" in BIOS settings
+   - See [GET_STARTED.md](./GET_STARTED.md) for detailed BIOS instructions
+   - Install Docker Desktop
    - Make sure it's running (you'll see a Docker icon in your system tray)
 
 ## Step 3: Open Terminal in Project Folder
